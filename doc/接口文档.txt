@@ -1,0 +1,96 @@
+
+
+保存预约信息
+接口名称
+customer/savePrebookNew.form
+
+请求参数
+表单提交参数：
+"passport_id":"111666888"
+"phone":"13812345678"
+"department_id":1
+"service_id":6
+"appointment_date":"2018-01-16 星期一"
+"appointment_time":"10:30-11:30"
+
+返回参数
+{
+    "code": "0000",
+    "data": {
+        "verification": "20180111143744"
+    },
+    "msg": "success"
+}
+
+
+错误码
+0000 success
+1001 接口请求失败
+
+
+
+查询网点信息
+接口名称
+customer/searchDepartmentInfo.form
+
+请求参数
+"department_id":1
+
+返回参数
+{
+    "code": "0000",
+    "data": {
+        "department": {
+            "department_address": "福田区华强北路266号",
+            "department_id": 2,
+            "department_name": "深圳福田分局",
+            "queuingNum": 4,
+            "services": [
+                {
+                    "service_id": 1,
+                    "service_name": "个人港澳自由行"
+                },
+                {
+                    "service_id": 2,
+                    "service_name": "香港移民定居"
+                }
+            ]
+        }
+    },
+    "msg": "success"
+}
+
+
+错误码
+0000 success
+1001 接口请求失败
+1002 查询参数有误
+
+
+
+新增业务员
+接口名称
+admin/addClerkNew.form
+
+请求参数
+表单提交参数：
+"clerk_username":"test"
+"clerk_password":"123"
+"department_id":1
+
+返回参数
+{
+    "code": "0000",
+    "data": {},
+    "msg": "success"
+}
+
+
+错误码
+0000 success
+1001 接口请求失败
+
+
+
+
+

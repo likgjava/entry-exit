@@ -7,7 +7,9 @@
 		<title>北京市出入境网上预约</title>
 		<link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet" type="text/css" />
 		<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.8.2.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery.form.js"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/js/prebook.js"></script>
+		<script type="text/javascript">var contextPath = '${pageContext.request.contextPath}';</script>
 	</head>
 
 	<body>
@@ -28,7 +30,8 @@
 			<div class="container">
 				<div class="mtop"></div>
 				<div class="notice">
-					<form name="bookingForm" method="post" action="${pageContext.request.contextPath}/customer/savePrebook.form" onsubmit="return check(this);" id="frm">
+
+					<form name="bookingForm" method="post" action="${pageContext.request.contextPath}/customer/savePrebookNew.form" id="frm">
 						<input type="hidden" name="token" value="${token}" />
 						<div class="biaoge">
 							<table width="752" border="0" cellspacing="0">
@@ -141,7 +144,7 @@
 								</tr>
 								<tr>
 									<td colspan="2" align="center">
-										<input id="yuyue" name="yuyue" type="submit" value="" onclick="setbookingform();">
+										<input id="yuyue" name="yuyue" type="button">
 										<a href="${pageContext.request.contextPath}/index.html"><input id="qxye" name="qxye" type="button"></a>
 										<a href="${pageContext.request.contextPath}/customer/toSearchPrebook.form"><input id="cxye" name="cxye" type="button"></a>
 									</td>

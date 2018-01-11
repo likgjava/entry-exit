@@ -104,3 +104,23 @@ function check(){
 //	);
 //}
 
+$(document).ready(function() {
+
+
+    $("#yuyue").click(function() {
+        //数据校验
+		if(!check()) {
+			return false;
+		}
+
+        $('#frm').ajaxSubmit(function(json) {
+            if(json.code == '0000'){
+                alert("预约成功，取号密码为：" + json.data.verification + " 请记取号密码！");
+                //window.location.href = contextPath + '/index.html';
+            }else {
+                alert(json.msg);
+            }
+        });
+        return false;
+    });
+});

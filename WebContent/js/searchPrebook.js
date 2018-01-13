@@ -34,3 +34,34 @@ function check(){
 	$('#errorInfo').html('填写信息有误，请查询！');
 	return false;
 }
+
+$(document).ready(function() {
+
+
+    $("#cxye").click(function() {
+        //数据校验
+        if(!check()) {
+            return false;
+        }
+
+        $('#sear_form').ajaxSubmit(function(json) {
+            if(json.code == '0000'){
+				var prebook = json.data.prebook;
+				$('#passport_id').html(prebook.passport_id);
+				$('#phone').html(prebook.phone);
+				$('#department_name').html(prebook.department_name);
+				$('#service_name').html(prebook.service_name);
+				$('#appointment_date').html(prebook.appointment_date);
+				$('#appointment_time').html(prebook.appointment_time);
+				$('#status').html(prebook.status==0 ? '未办理' : '已办理');
+				$('#passport_id').html(prebook.passport_id);
+
+				$('#prebookSearchDiv').hide();
+				$('#prebookResultDiv').show();
+            }else {
+                alert(json.msg);
+            }
+        });
+        return false;
+    });
+});

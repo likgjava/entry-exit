@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import com.alibaba.fastjson.JSONObject;
 import com.hyf.entryexit.base.BaseErrorMsg;
 import com.hyf.entryexit.base.JsonResult;
+import com.hyf.entryexit.entity.Prebook;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -54,9 +55,25 @@ public class AdminController {
         if (superUser == null) {
             return "redirect:../su_login.jsp";
         }
-        List<Department> departments = adminService.findAllDepartmentAndService();
-        model.addAttribute("departments", departments);
+        //List<Department> departments = adminService.findAllDepartmentAndService();
+        //model.addAttribute("departments", departments);
         return "admin/departmentManager";
+    }
+
+    @ResponseBody
+    @RequestMapping("/listDepartment.form")
+    @Transactional(readOnly = true)
+    public JsonResult listDepartment() {
+        JsonResult jsonResult = JsonResult.getInstance();
+        try {
+            List<Department> departmentList = adminService.findAllDepartmentAndService();
+            jsonResult.getData().put("departmentList", departmentList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            jsonResult = JsonResult.getFailResult(BaseErrorMsg.ERROR_API_FAIL);
+        }
+        System.out.println("listDepartment reponse=" + JSONObject.toJSONString(jsonResult));
+        return jsonResult;
     }
 
     /**
@@ -76,12 +93,19 @@ public class AdminController {
      * 1、网点信息管理 -- 新增网点
      * 新增成功后跳到所有信息 departmentManager.jsp 页面
      */
+    @ResponseBody
     @RequestMapping("/addDepartment.form")
     @Transactional(rollbackFor = Exception.class)
-    public String addDepartment(Model model, Department department, String[] selectedServiceId) {
-//		System.out.println(Arrays.toString(selectedServiceId));
-        adminService.saveDepartment(department, selectedServiceId);
-        return "redirect:departmentManager.form";
+    public JsonResult addDepartment(Department department, String[] selectedServiceId) {
+        JsonResult jsonResult = JsonResult.getInstance();
+        try {
+            adminService.saveDepartment(department, selectedServiceId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            jsonResult = JsonResult.getFailResult(BaseErrorMsg.ERROR_API_FAIL);
+        }
+        System.out.println("addDepartment response=" + JSONObject.toJSONString(jsonResult));
+        return jsonResult;
     }
 
     /**
@@ -102,11 +126,19 @@ public class AdminController {
      * 1、网点信息管理 -- 修改网点信息
      * 修改完网点信息后，返回 departmentManager.jsp 页面
      */
+    @ResponseBody
     @RequestMapping("/modifyDepartment.form")
     @Transactional(rollbackFor = Exception.class)
-    public String modifyDepartment(Department department, String[] selectedServiceId) {
-        adminService.updateDepartment(department, selectedServiceId);
-        return "redirect:departmentManager.form";
+    public JsonResult modifyDepartment(Department department, String[] selectedServiceId) {
+        JsonResult jsonResult = JsonResult.getInstance();
+        try {
+            adminService.updateDepartment(department, selectedServiceId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            jsonResult = JsonResult.getFailResult(BaseErrorMsg.ERROR_API_FAIL);
+        }
+        System.out.println("modifyDepartment response=" + JSONObject.toJSONString(jsonResult));
+        return jsonResult;
     }
 
     /**
@@ -114,25 +146,41 @@ public class AdminController {
      * 删除完后，返回 modifyDepartment.jsp 页面
      * 通过网点和id和业务的id
      */
+    @ResponseBody
     @RequestMapping("/deleteDepartmentService.form")
     @Transactional(rollbackFor = Exception.class)
-    public String deleteDepartmentService(Integer departmentId, Integer serviceId) {
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("departmentId", departmentId);
-        params.put("serviceId", serviceId);
-        adminService.deleteDepartmentService(params);
-        return "redirect:toModifyDepartment.form?departmentId=" + departmentId;
+    public JsonResult deleteDepartmentService(Integer departmentId, Integer serviceId) {
+        JsonResult jsonResult = JsonResult.getInstance();
+        try {
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("departmentId", departmentId);
+            params.put("serviceId", serviceId);
+            adminService.deleteDepartmentService(params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            jsonResult = JsonResult.getFailResult(BaseErrorMsg.ERROR_API_FAIL);
+        }
+        System.out.println("modifyPrebook reponse=" + JSONObject.toJSONString(jsonResult));
+        return jsonResult;
     }
 
     /**
      * 1、网点信息管理 -- 删除网点信息
      * 删除完网点信息后，返回 departmentManager.jsp 页面
      */
+    @ResponseBody
     @RequestMapping("/deleteDepartment.form")
     @Transactional(rollbackFor = Exception.class)
-    public String deleteDepartment(Integer departmentId) {
-        adminService.deleteDepartment(departmentId);
-        return "redirect:departmentManager.form";
+    public JsonResult deleteDepartment(Integer departmentId) {
+        JsonResult jsonResult = JsonResult.getInstance();
+        try {
+            adminService.deleteDepartment(departmentId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            jsonResult = JsonResult.getFailResult(BaseErrorMsg.ERROR_API_FAIL);
+        }
+        System.out.println("modifyPrebook reponse=" + JSONObject.toJSONString(jsonResult));
+        return jsonResult;
     }
 
     /**
@@ -151,53 +199,77 @@ public class AdminController {
         return "admin/serviceManage";
     }
 
+    @ResponseBody
+    @RequestMapping("/listService.form")
+    @Transactional(readOnly = true)
+    public JsonResult listService() {
+        JsonResult jsonResult = JsonResult.getInstance();
+        try {
+            List<Service> serviceList = adminService.findAllService();
+            jsonResult.getData().put("serviceList", serviceList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            jsonResult = JsonResult.getFailResult(BaseErrorMsg.ERROR_API_FAIL);
+        }
+        System.out.println("listService response=" + JSONObject.toJSONString(jsonResult));
+        return jsonResult;
+    }
+
     /**
      * 2、业务信息管理-- 新增业务
      * 新增成功后跳到所有信息 serviceManage.jsp页面
      */
+    @ResponseBody
     @RequestMapping("/addService.form")
     @Transactional(rollbackFor = Exception.class)
-    public String addService(Service service) {
-//		System.out.println("-----begin----->"+service.getService_name());
+    public JsonResult addService(Service service) {
+        JsonResult jsonResult = JsonResult.getInstance();
         try {
-            //页面传来的是连接传来的，如果是中文那就要转下编码
-            String serviceName = new String(service.getService_name().getBytes("iso-8859-1"), "UTF-8");
-            service.setService_name(serviceName);
-        } catch (UnsupportedEncodingException e) {
+            adminService.saveService(service);
+        } catch (Exception e) {
             e.printStackTrace();
+            jsonResult = JsonResult.getFailResult(BaseErrorMsg.ERROR_API_FAIL);
         }
-//		System.out.println("-----end----->"+service.getService_name());
-        adminService.saveService(service);
-        return "redirect:serviceManage.form";
+        System.out.println("addService response=" + JSONObject.toJSONString(jsonResult));
+        return jsonResult;
     }
 
     /**
      * 2、业务信息管理 -- 修改业务信息
      * 修改完网点信息后，返回 serviceManage.jsp 页面
      */
+    @ResponseBody
     @RequestMapping("/modifyService.form")
     @Transactional(rollbackFor = Exception.class)
-    public String modifyService(Service service) {
+    public JsonResult modifyService(Service service) {
+        JsonResult jsonResult = JsonResult.getInstance();
         try {
-            //页面传来的是连接传来的，如果是中文那就要转下编码
-            String serviceName = new String(service.getService_name().getBytes("iso-8859-1"), "UTF-8");
-            service.setService_name(serviceName);
-        } catch (UnsupportedEncodingException e) {
+            adminService.updateService(service);
+        } catch (Exception e) {
             e.printStackTrace();
+            jsonResult = JsonResult.getFailResult(BaseErrorMsg.ERROR_API_FAIL);
         }
-        adminService.updateService(service);
-        return "redirect:serviceManage.form";
+        System.out.println("modifyService response=" + JSONObject.toJSONString(jsonResult));
+        return jsonResult;
     }
 
     /**
      * 2、业务信息管理 -- 删除业务信息,并删除业务与网点关联记录
      * 删除完后，返回 serviceManage.jsp 页面
      */
+    @ResponseBody
     @RequestMapping("/deleteService.form")
     @Transactional(rollbackFor = Exception.class)
-    public String deleteService(Integer serviceId) {
-        adminService.deleteService(serviceId);
-        return "redirect:serviceManage.form";
+    public JsonResult deleteService(Integer serviceId) {
+        JsonResult jsonResult = JsonResult.getInstance();
+        try {
+            adminService.deleteService(serviceId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            jsonResult = JsonResult.getFailResult(BaseErrorMsg.ERROR_API_FAIL);
+        }
+        System.out.println("deleteService response=" + JSONObject.toJSONString(jsonResult));
+        return jsonResult;
     }
 
     /**
@@ -211,9 +283,25 @@ public class AdminController {
         if (superUser == null) {
             return "redirect:../su_login.jsp";
         }
-        List<Clerk> clerks = adminService.findAllClerk();
-        model.addAttribute("clerks", clerks);
+        //List<Clerk> clerks = adminService.findAllClerk();
+        //model.addAttribute("clerks", clerks);
         return "admin/clerkManage";
+    }
+
+    @ResponseBody
+    @RequestMapping("/listClerk.form")
+    @Transactional(readOnly = true)
+    public JsonResult listClerk() {
+        JsonResult jsonResult = JsonResult.getInstance();
+        try {
+            List<Clerk> clerkList = adminService.findAllClerk();
+            jsonResult.getData().put("clerkList", clerkList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            jsonResult = JsonResult.getFailResult(BaseErrorMsg.ERROR_API_FAIL);
+        }
+        System.out.println("listClerk response=" + JSONObject.toJSONString(jsonResult));
+        return jsonResult;
     }
 
     /**
@@ -229,16 +317,6 @@ public class AdminController {
         return "admin/addClerk";
     }
 
-    /**
-     * 3、业务员信息管理-- 新增业务员
-     * 新增成功后跳到所有信息 clerkManage.jsp页面
-     */
-    @RequestMapping("/addClerk.form")
-    @Transactional(rollbackFor = Exception.class)
-    public String addClerk(Model model, Clerk clerk) {
-        adminService.saveClerk(clerk);
-        return "redirect:clerkManage.form";
-    }
 
 
     /**
@@ -246,10 +324,10 @@ public class AdminController {
      * 新增成功后跳到所有信息 clerkManage.jsp页面
      */
     @ResponseBody
-    @RequestMapping("/addClerkNew.form")
+    @RequestMapping("/addClerk.form")
     @Transactional(rollbackFor = Exception.class)
-    public JsonResult addClerkNew(Clerk clerk) {
-        System.out.println("addClerkNew........" + JSONObject.toJSONString(clerk));
+    public JsonResult addClerk(Clerk clerk) {
+        System.out.println("addClerk........" + JSONObject.toJSONString(clerk));
         JsonResult jsonResult = JsonResult.getInstance();
         try {
             adminService.saveClerk(clerk);
@@ -257,7 +335,7 @@ public class AdminController {
             e.printStackTrace();
             jsonResult = JsonResult.getFailResult(BaseErrorMsg.ERROR_API_FAIL);
         }
-        System.out.println("addClerkNew reponse=" + JSONObject.toJSONString(jsonResult));
+        System.out.println("addClerk response=" + JSONObject.toJSONString(jsonResult));
         return jsonResult;
     }
 
@@ -282,22 +360,39 @@ public class AdminController {
      * 3、业务员信息管理-- 修改业务员信息
      * 新增成功后跳到所有信息 clerkManage.jsp页面
      */
+    @ResponseBody
     @RequestMapping("/modifyClerk.form")
     @Transactional(rollbackFor = Exception.class)
-    public String modifyClerk(Clerk clerk) {
-        adminService.updateClerk(clerk);
-        return "redirect:clerkManage.form";
+    public JsonResult modifyClerk(Clerk clerk) {
+        System.out.println("modifyClerk........" + JSONObject.toJSONString(clerk));
+        JsonResult jsonResult = JsonResult.getInstance();
+        try {
+            adminService.updateClerk(clerk);
+        } catch (Exception e) {
+            e.printStackTrace();
+            jsonResult = JsonResult.getFailResult(BaseErrorMsg.ERROR_API_FAIL);
+        }
+        System.out.println("modifyClerk response=" + JSONObject.toJSONString(jsonResult));
+        return jsonResult;
     }
 
     /**
      * 3、业务员信息管理 -- 删除业务员信息
      * 删除完后，返回 clerkManage.jsp 页面
      */
+    @ResponseBody
     @RequestMapping("/deleteClerk.form")
     @Transactional(rollbackFor = Exception.class)
-    public String deleteClerk(Integer clerkId) {
-        adminService.deleteClerk(clerkId);
-        return "redirect:clerkManage.form";
+    public JsonResult deleteClerk(Integer clerkId) {
+        JsonResult jsonResult = JsonResult.getInstance();
+        try {
+            adminService.deleteClerk(clerkId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            jsonResult = JsonResult.getFailResult(BaseErrorMsg.ERROR_API_FAIL);
+        }
+        System.out.println("deleteClerk response=" + JSONObject.toJSONString(jsonResult));
+        return jsonResult;
     }
 
 

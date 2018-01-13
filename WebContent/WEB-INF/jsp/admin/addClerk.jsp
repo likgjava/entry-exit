@@ -43,7 +43,7 @@
         </div>
         <br/>
         <h3 style="color: green;text-align: center;">添加业务员</h3>
-        <form action="${pageContext.request.contextPath}/admin/addClerkNew.form" method="post" id="submitClerk">
+        <form action="${pageContext.request.contextPath}/admin/addClerk.form" method="post" id="submitClerk">
             <input type="hidden" value="${clerk.clerkId}" name="clerk.clerkId">
             <table border='1' cellpadding='0' cellspacing='0' class="prebook_result" style="font-size: 11pt;">
                 <tr style="font-weight: bold;">

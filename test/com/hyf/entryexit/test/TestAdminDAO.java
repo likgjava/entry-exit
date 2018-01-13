@@ -18,8 +18,7 @@ public class TestAdminDAO {
 	ApplicationContext ac = new ClassPathXmlApplicationContext(conf);
 	AdminDAO dao = ac.getBean(AdminDAO.class);
 	
-	@Test
-	@Ignore
+	//@Test
 	public void findAllDepartmentAndService(){
 		List<Department> lists = dao.findAllDepartmentAndService();
 		for (Department department : lists) {
@@ -32,8 +31,7 @@ public class TestAdminDAO {
 			System.out.println("----------------------------");
 		}
 	}
-	@Test
-	@Ignore
+	//@Test
 	public void saveDepartment(){
 		Department department = new Department();
 		department.setDepartment_name("测试name");
@@ -44,7 +42,7 @@ public class TestAdminDAO {
 		System.out.println("id=:"+department.getDepartment_id());
 
 	}
-	@Test
+	//@Test
 	public void findAllClerk(){
 		List<Clerk> clerks = dao.findAllClerk();
 		for (Clerk clerk : clerks) {

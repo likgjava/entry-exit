@@ -21,16 +21,14 @@ public class TestCustomerDAO {
 	ApplicationContext ac = new ClassPathXmlApplicationContext(conf);
 	CustomerDAO dao = ac.getBean(CustomerDAO.class);
 	
-	@Test
-	@Ignore
+	//@Test
 	public void findDepartmentAll(){
 		List<Department> lists = dao.findDepartmentAll();
 		for (Department department : lists) {
 			System.out.println(department.getDepartment_name());
 		}
 	}
-	@Test
-	@Ignore
+	//@Test
 	public void findDepartmentById(){
 		Department department = dao.findDepartmentById(4);
 		System.out.println(department.getDepartment_address());
@@ -42,8 +40,7 @@ public class TestCustomerDAO {
 		System.out.println("------------------------");
 		System.out.println(department.getQueuingNum());
 	}
-	@Test
-	@Ignore
+	//@Test
 	public void savePrebook(){
 		Prebook prebook = new Prebook();
 		prebook.setPassport_id("440785197809128522");
@@ -59,7 +56,7 @@ public class TestCustomerDAO {
 		Integer n = dao.savePrebook(prebook);
 		System.out.println(n);
 	}
-	@Test
+	//@Test
 	public void findPrebook(){
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("passportId", "342585197807689");

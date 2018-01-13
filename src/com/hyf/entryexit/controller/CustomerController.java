@@ -228,7 +228,7 @@ public class CustomerController {
      * @param model        绑定数据返回页面
      * @return 跳到searchPrebookResult.jsp
      */
-    @RequestMapping("/searchPrebookResult.form")
+    /*@RequestMapping("/searchPrebookResult.form")
     @Transactional(readOnly = true)
     public String searchPrebook(String passportId, String verification, Model model) {
         Prebook prebook = customerService.findPrebook(passportId, verification);
@@ -238,8 +238,33 @@ public class CustomerController {
         }
         model.addAttribute("prebook", prebook);
         return "customer/searchPrebookResult";
-    }
+    }*/
 
+    /**
+     * 预约查询
+     * @param passportId
+     * @param verification
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/searchPrebook.form")
+    @Transactional(readOnly = true)
+    public JsonResult searchPrebook(String passportId, String verification) {
+        JsonResult jsonResult = JsonResult.getInstance();
+        try {
+            Prebook prebook = customerService.findPrebook(passportId, verification);
+            if (prebook == null) {
+                jsonResult = JsonResult.getFailResult(BaseErrorMsg.ERROR_PREBOOK_NOT_EXIST);
+            } else {
+                jsonResult.getData().put("prebook", prebook);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            jsonResult = JsonResult.getFailResult(BaseErrorMsg.ERROR_API_FAIL);
+        }
+        System.out.println("searchDepartmentInfo reponse=" + JSONObject.toJSONString(jsonResult));
+        return jsonResult;
+    }
 }
 
 

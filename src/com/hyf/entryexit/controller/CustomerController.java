@@ -7,6 +7,8 @@ import javax.annotation.Resource;
 import com.alibaba.fastjson.JSONObject;
 import com.hyf.entryexit.base.BaseErrorMsg;
 import com.hyf.entryexit.base.JsonResult;
+import com.hyf.entryexit.base.ParamCheckException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -48,10 +50,30 @@ public class CustomerController {
     @Transactional(readOnly = true)
     public String findDepartmentAll(Model model) {
         //通过service层查询
-        List<Department> departments = customerService.findDepartmentAll();
+        //List<Department> departments = customerService.findDepartmentAll();
         //绑定到model对象
-        model.addAttribute("departments", departments);
+        //model.addAttribute("departments", departments);
         return "customer/searchDepartment";
+    }
+
+    @ResponseBody
+    @RequestMapping("/searchDepartmentInfo.form")
+    @Transactional(readOnly = true)
+    public JsonResult searchDepartmentInfo(@RequestParam("department_id") Integer id) {
+        JsonResult jsonResult = JsonResult.getInstance();
+        try {
+            if (id <= 0) {
+                jsonResult = JsonResult.getFailResult(BaseErrorMsg.ERROR_DEPARTMENT_IS_NULL);
+            } else {
+                Department department = customerService.findDepartmentById(id);
+                jsonResult.getData().put("department", department);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            jsonResult = JsonResult.getFailResult(BaseErrorMsg.ERROR_API_FAIL);
+        }
+        System.out.println("searchDepartmentInfo response=" + JSONObject.toJSONString(jsonResult));
+        return jsonResult;
     }
 
     /**
@@ -79,13 +101,6 @@ public class CustomerController {
         model.addAttribute("department", department);
         return "customer/departmentSearchResult";
     }
-
-
-
-
-
-
-
 
     /**
      * 2、网上预约
@@ -128,72 +143,50 @@ public class CustomerController {
      * 2、网上预约
      * 预约,预约成绩跳到msg.jsp页面
      */
+    @ResponseBody
     @RequestMapping("/savePrebook.form")
     @Transactional(rollbackFor = Exception.class)
-    @Token(remove = true)//用来防止数据重复提交，这个是删除token
-    public String savePrebookResult(Prebook prebook, Model model) {
-        try {
-            String verification = customerService.savePrebook(prebook);
-            model.addAttribute("msg", "<span style='color:green;'>预约成功，取号密码为：" + verification + " 请记取号密码！</span>");
-        } catch (Exception e) {
-            e.printStackTrace();
-            model.addAttribute("msg", "<span style='color:red;'>网络异常！请稍后重试！谢谢！</span>");
-            return "msg";
-        }
-        return "msg";
-    }
-
-    /**
-     * 2、网上预约
-     * 预约,预约成绩跳到msg.jsp页面
-     */
-    @ResponseBody
-    @RequestMapping("/savePrebookNew.form")
-    @Transactional(rollbackFor = Exception.class)
     //@Token(remove = true)
-    public JsonResult savePrebookNew(Prebook prebook) {
-
-        System.out.println("savePrebookNew........" + JSONObject.toJSONString(prebook));
+    public JsonResult savePrebook(Prebook prebook) {
+        System.out.println("savePrebook request param=" + JSONObject.toJSONString(prebook));
         JsonResult jsonResult = JsonResult.getInstance();
         try {
+            //参数校验
+            this.checkParam(prebook);
+
             String verification = customerService.savePrebook(prebook);
-            //model.addAttribute("msg", "<span style='color:green;'>预约成功，取号密码为：" + verification + " 请记取号密码！</span>");
-
             jsonResult.getData().put("verification", verification);
-
+        } catch (ParamCheckException e) {
+            e.printStackTrace();
+            jsonResult = JsonResult.getFailResult(e.getErrorMsg());
         } catch (Exception e) {
             e.printStackTrace();
             jsonResult = JsonResult.getFailResult(BaseErrorMsg.ERROR_API_FAIL);
         }
-        System.out.println("savePrebookNew reponse=" + JSONObject.toJSONString(jsonResult));
+        System.out.println("savePrebook response=" + JSONObject.toJSONString(jsonResult));
         return jsonResult;
     }
 
-    @ResponseBody
-    @RequestMapping("/searchDepartmentInfo.form")
-    @Transactional(readOnly = true)
-    public JsonResult searchDepartmentInfo(@RequestParam("department_id") Integer id) {
-        JsonResult jsonResult = JsonResult.getInstance();
-        try {
-            //如果id返回是-1，那就是没有选择网点，不给提交，提示用户请选择网点,否则提交查询
-            if (id == -1) {
-                //ra.addFlashAttribute("department_error", "请选择一个网点！");
-                jsonResult = JsonResult.getFailResult(BaseErrorMsg.ERROR_QUERY_PARAM);
-            } else {
-                Department department = customerService.findDepartmentById(id);
-                //model.addAttribute("department", department);
-                jsonResult.getData().put("department", department);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            jsonResult = JsonResult.getFailResult(BaseErrorMsg.ERROR_API_FAIL);
+    private void checkParam(Prebook prebook) {
+        if (StringUtils.isBlank(prebook.getPassport_id())) {
+            throw new ParamCheckException(BaseErrorMsg.ERROR_SAVE_PREBOOK_PASSPORT_ID_IS_NULL);
         }
-        System.out.println("searchDepartmentInfo reponse=" + JSONObject.toJSONString(jsonResult));
-        return jsonResult;
+        if (StringUtils.isBlank(prebook.getPhone())) {
+            throw new ParamCheckException(BaseErrorMsg.ERROR_SAVE_PREBOOK_PHONE_IS_NULL);
+        }
+        if (prebook.getDepartment_id() == null || prebook.getDepartment_id() <= 0) {
+            throw new ParamCheckException(BaseErrorMsg.ERROR_SAVE_PREBOOK_DEPARTMENT_IS_NULL);
+        }
+        if (prebook.getService_id() == null || prebook.getService_id() <= 0) {
+            throw new ParamCheckException(BaseErrorMsg.ERROR_SAVE_PREBOOK_SERVICE_IS_NULL);
+        }
+        if (StringUtils.isBlank(prebook.getAppointment_date())) {
+            throw new ParamCheckException(BaseErrorMsg.ERROR_SAVE_PREBOOK_DATE_IS_NULL);
+        }
+        if (StringUtils.isBlank(prebook.getAppointment_time())) {
+            throw new ParamCheckException(BaseErrorMsg.ERROR_SAVE_PREBOOK_TIME_IS_NULL);
+        }
     }
-
-
-
 
 
     /**
@@ -242,6 +235,7 @@ public class CustomerController {
 
     /**
      * 预约查询
+     *
      * @param passportId
      * @param verification
      * @return

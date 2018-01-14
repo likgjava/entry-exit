@@ -31,7 +31,7 @@
 				<div class="mtop"></div>
 				<div class="notice">
 
-					<form name="bookingForm" method="post" action="${pageContext.request.contextPath}/customer/savePrebookNew.form" id="frm">
+					<form name="bookingForm" method="post" action="${pageContext.request.contextPath}/customer/savePrebook.form" id="frm">
 						<input type="hidden" name="token" value="${token}" />
 						<div class="biaoge">
 							<table width="752" border="0" cellspacing="0">
@@ -93,7 +93,7 @@
 									<td style="width:209px; border-bottom:1px solid #D1EAFA;border-right:1px solid #D1EAFA;padding-left: 8px;">
 										<div class="xiala">
 											<select id="preDate" name="appointment_date" >
-												<option value="-1" >--请选择预约日期--</option>
+												<option value="" >--请选择预约日期--</option>
 												<c:forEach items="${dates}" var="date">
 													<option value="${date}" >${date}</option>
 												</c:forEach>
@@ -109,7 +109,7 @@
 									<td style="width:209px; border-bottom:1px solid #D1EAFA;border-right:1px solid #D1EAFA;padding-left: 8px;">
 										<div class="xiala">
 											<select name="appointment_time" style="width:175px;" id="YYSJ">
-												<option value="-1" selected="selected">--请选择时间--</option>
+												<option value="" selected="selected">--请选择时间--</option>
 												<option value="09:30-10:30">09:30-10:30</option>
 												<option value="10:30-11:30">10:30-11:30</option>
 												<option value="14:30-15:30">14:30-15:30</option>

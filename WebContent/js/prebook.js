@@ -116,7 +116,7 @@ $(document).ready(function() {
         $('#frm').ajaxSubmit(function(json) {
             if(json.code == '0000'){
                 alert("预约成功，取号密码为：" + json.data.verification + " 请记取号密码！");
-                //window.location.href = contextPath + '/index.html';
+                window.location.href = contextPath + '/index.html';
             }else {
                 alert(json.msg);
             }

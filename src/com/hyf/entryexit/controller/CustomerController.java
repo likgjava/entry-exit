@@ -50,9 +50,9 @@ public class CustomerController {
     @Transactional(readOnly = true)
     public String findDepartmentAll(Model model) {
         //通过service层查询
-        //List<Department> departments = customerService.findDepartmentAll();
+        List<Department> departments = customerService.findDepartmentAll();
         //绑定到model对象
-        //model.addAttribute("departments", departments);
+        model.addAttribute("departments", departments);
         return "customer/searchDepartment";
     }
 
